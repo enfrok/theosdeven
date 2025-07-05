@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EnfrokOS</title>
   <style>
     * {
@@ -11,7 +11,6 @@
       box-sizing: border-box;
     }
     html, body {
-      width: 100%;
       height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
       background-color: #888;
@@ -29,7 +28,7 @@
       color: white;
       padding: 20px;
       text-align: center;
-      transition: opacity 1s ease;
+      transition: opacity 0.6s ease;
     }
     .hidden { opacity: 0; pointer-events: none; }
     input, button {
@@ -56,7 +55,7 @@
       justify-content: center;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: bold;
       color: #333;
     }
@@ -74,6 +73,7 @@
       background: #0078d7;
       color: white;
       padding: 5px 10px;
+      font-weight: bold;
     }
     .window-body {
       flex-grow: 1;
@@ -84,15 +84,17 @@
   </style>
 </head>
 <body>
+  <!-- Setup screen -->
   <div id="startup-screen" class="screen">
     <h1>Welcome to EnfrokOS!</h1>
-    <p>This OS supports Spotify and Wikipedia in the browser. You can search your favorite singers in Spotify. Enter your name and password to begin.</p>
+    <p>This OS supports Spotify and Wikipedia in the browser.<br> Enter your name and password to begin.</p>
     <input type="text" id="name-input" placeholder="Enter your name">
     <input type="password" id="pass-input" placeholder="Create a password">
     <div id="setup-error" class="error"></div>
     <button onclick="completeSetup()">Continue</button>
   </div>
 
+  <!-- Login screen -->
   <div id="login-screen" class="screen hidden">
     <h1 id="login-title">Login</h1>
     <input type="password" id="login-pass" placeholder="Enter password">
@@ -100,6 +102,7 @@
     <button onclick="attemptLogin()">Login</button>
   </div>
 
+  <!-- Desktop / Main OS -->
   <div id="desktop" class="hidden">
     <div class="taskbar">
       <div class="icon" onclick="openApp('spotify')">🎵</div>
@@ -107,24 +110,31 @@
       <div class="icon" onclick="openApp('settings')">⚙️</div>
       <div class="icon" onclick="openApp('calc')">🧮</div>
     </div>
+
     <div id="spotify" class="window">
       <div class="window-header">Spotify</div>
       <div class="window-body">
-        <iframe style="width:100%;height:100%;" src="https://open.spotify.com/embed/" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <iframe style="width:100%; height:100%;" src="https://open.spotify.com/embed/" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
       </div>
     </div>
+
     <div id="browser" class="window">
       <div class="window-header">Browser</div>
       <div class="window-body">
-        <input type="text" id="url" placeholder="Enter URL"><button onclick="loadSite()">Go</button>
-        <iframe id="iframe" style="width:100%;height:200px;"></iframe>
+        <input type="text" id="url" placeholder="Enter URL (only Wikipedia or Spotify)">
+        <button onclick="loadSite()">Go</button>
+        <iframe id="iframe" style="width:100%; height:200px;"></iframe>
         <div id="browser-msg"></div>
       </div>
     </div>
+
     <div id="settings" class="window">
       <div class="window-header">Settings</div>
-      <div class="window-body">Settings won't work as it is incomplete.</div>
+      <div class="window-body">
+        Settings won't work as it is incomplete.
+      </div>
     </div>
+
     <div id="calc" class="window">
       <div class="window-header">Calculator</div>
       <div class="window-body">
@@ -147,8 +157,9 @@
     function completeSetup() {
       const name = document.getElementById("name-input").value.trim();
       const pass = document.getElementById("pass-input").value.trim();
+      const err = document.getElementById("setup-error");
       if (pass.length < 6) {
-        document.getElementById("setup-error").textContent = "Password should be minimum 6 digits.";
+        err.textContent = "Password should be minimum 6 digits.";
         return;
       }
       userPass = pass;
@@ -160,24 +171,27 @@
 
     function attemptLogin() {
       const entered = document.getElementById("login-pass").value;
+      const errorBox = document.getElementById("login-error");
       if (entered === userPass) {
         document.getElementById("login-screen").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
+        errorBox.textContent = "";
       } else {
-        document.getElementById("login-error").textContent = "Incorrect password.";
+        errorBox.textContent = "Incorrect password.";
       }
     }
 
-    function openApp(id) {
-      document.querySelectorAll(".window").forEach(w => w.style.display = "none");
-      document.getElementById(id).style.display = "flex";
+    function openApp(appId) {
+      document.querySelectorAll(".window").forEach(win => win.style.display = "none");
+      document.getElementById(appId).style.display = "flex";
     }
 
     function loadSite() {
-      const site = document.getElementById("url").value.trim();
+      const url = document.getElementById("url").value;
       const msg = document.getElementById("browser-msg");
-      if (site.includes("wikipedia.org") || site.includes("spotify.com")) {
-        document.getElementById("iframe").src = site;
+      const iframe = document.getElementById("iframe");
+      if (url.includes("wikipedia.org") || url.includes("spotify.com")) {
+        iframe.src = url;
         msg.textContent = "";
       } else {
         msg.textContent = "Add https:// and ensure site is compatible.";
@@ -187,8 +201,15 @@
     function calcPress(key) {
       const display = document.getElementById("calc-display");
       if (key === 'C') display.value = '';
-      else if (key === '=') display.value = eval(display.value || '0');
-      else display.value += key;
+      else if (key === '=') {
+        try {
+          display.value = eval(display.value || '0');
+        } catch {
+          display.value = 'Error';
+        }
+      } else {
+        display.value += key;
+      }
     }
   </script>
 </body>
