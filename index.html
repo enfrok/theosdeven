@@ -173,7 +173,6 @@
           <button onclick="calcPress('1')">1</button>
           <button onclick="calcPress('2')">2</button>
           <button onclick="calcPress('3')">3</button>
-          <button onclick="calcPress('*')">×</button><br>
           <button onclick="calcPress('0')">0</button>
           <button onclick="calcPress('.')">.</button>
           <button onclick="calcPress('=')">=</button>
@@ -232,7 +231,7 @@
         iframe.src = url;
         msg.textContent = "";
       } else {
-        msg.textContent = "Add https:// and ensure site is compatible.";
+        msg.textContent = "URL not found, EnforkOS runs Wikipedia in browser only.";
       }
     }
 
