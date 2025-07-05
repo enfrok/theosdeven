@@ -28,9 +28,13 @@
       color: white;
       padding: 20px;
       text-align: center;
-      transition: opacity 0.6s ease;
+      opacity: 1;
+      transition: opacity 0.8s ease;
     }
-    .hidden { opacity: 0; pointer-events: none; }
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
     input, button {
       padding: 10px;
       font-size: 1rem;
@@ -91,7 +95,19 @@
     <input type="text" id="name-input" placeholder="Enter your name">
     <input type="password" id="pass-input" placeholder="Create a password">
     <div id="setup-error" class="error"></div>
-    <button onclick="completeSetup()">Continue</button>
+    <button onclick="showConditions()">Continue</button>
+  </div>
+
+  <!-- Conditions screen -->
+  <div id="condition-screen" class="screen hidden">
+    <h2>Conditions in EnfrokOS</h2>
+    <ul style="text-align: left; max-width: 400px; margin-top: 20px;">
+      <li>• Minimising on EnfrokOS is currently not available.</li>
+      <li>• There are currently four apps: Spotify, Browser, Settings and Calculator.</li>
+      <li>• Settings app is incomplete and would be functioning soon.</li>
+      <li>• Shifting the apps from one place to another is not available yet.</li>
+    </ul>
+    <button onclick="completeSetup()" style="margin-top: 20px;">Continue</button>
   </div>
 
   <!-- Login screen -->
@@ -154,7 +170,7 @@
     let userPass = "";
     let userName = "User";
 
-    function completeSetup() {
+    function showConditions() {
       const name = document.getElementById("name-input").value.trim();
       const pass = document.getElementById("pass-input").value.trim();
       const err = document.getElementById("setup-error");
@@ -165,6 +181,11 @@
       userPass = pass;
       userName = name || "User";
       document.getElementById("startup-screen").classList.add("hidden");
+      document.getElementById("condition-screen").classList.remove("hidden");
+    }
+
+    function completeSetup() {
+      document.getElementById("condition-screen").classList.add("hidden");
       document.getElementById("login-title").textContent = userName;
       document.getElementById("login-screen").classList.remove("hidden");
     }
