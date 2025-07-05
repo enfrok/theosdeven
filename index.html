@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EnfrokOS</title>
   <style>
+    :root {
+      --bg: #888;
+      --screen-dark: rgba(0, 0, 0, 0.9);
+      --font: -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
+      --primary: #0078d7;
+      --white: #fff;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: var(--font);
     }
+
     html, body {
       height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
-      background-color: #888;
-      overflow: hidden;
+      background: var(--bg);
     }
+
     .screen {
       position: fixed;
       top: 0; left: 0;
@@ -24,144 +33,146 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: var(--screen-dark);
       color: white;
-      padding: 20px;
       text-align: center;
+      transition: opacity 0.6s ease;
       opacity: 1;
-      transition: opacity 0.8s ease;
+      z-index: 10;
     }
+
     .hidden {
       opacity: 0;
       pointer-events: none;
     }
+
     input, button {
       padding: 10px;
+      margin: 8px 0;
       font-size: 1rem;
-      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
     }
+
+    button {
+      background: var(--primary);
+      color: var(--white);
+      cursor: pointer;
+    }
+
     .taskbar {
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 40px;
-      background: rgba(30, 30, 30, 0.85);
+      background: rgba(30, 30, 30, 0.95);
+      padding: 10px;
       display: flex;
-      align-items: center;
-      padding: 0 10px;
-      gap: 10px;
-    }
-    .icon {
-      width: 32px; height: 32px;
-      background: white;
-      display: flex;
-      align-items: center;
       justify-content: center;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
+      gap: 20px;
     }
+
+    .icon {
+      background: var(--white);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
     .window {
       position: absolute;
-      top: 80px; left: 100px;
-      width: 400px; height: 300px;
-      background: white;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      background: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       display: none;
       flex-direction: column;
     }
+
     .window-header {
-      background: #0078d7;
+      background: var(--primary);
       color: white;
-      padding: 5px 10px;
-      font-weight: bold;
-    }
-    .window-body {
-      flex-grow: 1;
       padding: 10px;
+      font-weight: bold;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .window-body {
+      padding: 15px;
+      max-height: 300px;
       overflow: auto;
     }
-    .error { color: red; font-size: 0.9rem; margin-top: 5px; }
-    .calc-buttons button {
-      width: 25%;
-      padding: 10px;
-      font-size: 1.1rem;
-      margin: 2px;
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <!-- Setup screen -->
-  <div id="startup-screen" class="screen">
-    <h1>Welcome to EnfrokOS!</h1>
-    <p>This OS supports Spotify and Wikipedia in the browser.<br> Enter your name and password to begin.</p>
-    <input type="text" id="name-input" placeholder="Enter your name">
-    <input type="password" id="pass-input" placeholder="Create a password">
-    <div id="setup-error" class="error"></div>
+  <!-- Startup screen -->
+  <div class="screen" id="startup">
+    <h1>Welcome to EnfrokOS</h1>
+    <p>This OS includes Browser, Settings, and Calculator.<br>Please enter your details to begin.</p>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="password" id="password" placeholder="Create a password">
+    <div class="error" id="setup-error"></div>
     <button onclick="showConditions()">Continue</button>
   </div>
 
-  <!-- Conditions screen -->
-  <div id="condition-screen" class="screen hidden">
+  <!-- Conditions -->
+  <div class="screen hidden" id="conditions">
     <h2>Conditions in EnfrokOS</h2>
-    <ul style="text-align: left; max-width: 400px; margin-top: 20px;">
+    <ul style="text-align:left; max-width: 400px">
       <li>• Minimising on EnfrokOS is currently not available.</li>
-      <li>• There are currently four apps: Spotify, Browser, Settings and Calculator.</li>
+      <li>• There are currently three apps: Browser, Settings and Calculator.</li>
       <li>• Settings app is incomplete and would be functioning soon.</li>
-      <li>• Shifting the apps from one place to another is not available yet.</li>
+      <li>• Shifting apps from one place to another is not available yet.</li>
     </ul>
-    <button onclick="completeSetup()" style="margin-top: 20px;">Continue</button>
+    <button onclick="goToLogin()">Continue</button>
   </div>
 
-  <!-- Login screen -->
-  <div id="login-screen" class="screen hidden">
+  <!-- Login -->
+  <div class="screen hidden" id="login">
     <h1 id="login-title">Login</h1>
-    <input type="password" id="login-pass" placeholder="Enter password">
-    <div id="login-error" class="error"></div>
-    <button onclick="attemptLogin()">Login</button>
+    <input type="password" id="login-input" placeholder="Enter password">
+    <div class="error" id="login-error"></div>
+    <button onclick="login()">Login</button>
   </div>
 
-  <!-- Desktop / Main OS -->
-  <div id="desktop" class="hidden">
+  <!-- Desktop -->
+  <div class="hidden" id="desktop">
     <div class="taskbar">
-      <div class="icon" onclick="openApp('spotify')">🎵</div>
       <div class="icon" onclick="openApp('browser')">🌐</div>
       <div class="icon" onclick="openApp('settings')">⚙️</div>
       <div class="icon" onclick="openApp('calc')">🧮</div>
     </div>
 
-    <div id="spotify" class="window">
-      <div class="window-header">Spotify</div>
-      <div class="window-body">
-        <iframe style="width:100%; height:100%;" src="https://open.spotify.com/embed/" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-      </div>
-    </div>
-
-    <div id="browser" class="window">
+    <div class="window" id="browser">
       <div class="window-header">Browser</div>
       <div class="window-body">
-        <input type="text" id="url" placeholder="Enter URL (only Wikipedia or Spotify)">
+        <input type="text" id="url" placeholder="Only Wikipedia supported">
         <button onclick="loadSite()">Go</button>
         <iframe id="iframe" style="width:100%; height:200px;"></iframe>
         <div id="browser-msg"></div>
       </div>
     </div>
 
-    <div id="settings" class="window">
+    <div class="window" id="settings">
       <div class="window-header">Settings</div>
-      <div class="window-body">
-        Settings won't work as it is incomplete.
-      </div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
     </div>
 
-    <div id="calc" class="window">
+    <div class="window" id="calc">
       <div class="window-header">Calculator</div>
       <div class="window-body">
         <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
-        <div class="calc-buttons">
+        <div style="margin-top: 10px;">
           <button onclick="calcPress('7')">7</button>
           <button onclick="calcPress('8')">8</button>
           <button onclick="calcPress('9')">9</button>
@@ -173,6 +184,7 @@
           <button onclick="calcPress('1')">1</button>
           <button onclick="calcPress('2')">2</button>
           <button onclick="calcPress('3')">3</button>
+          <button onclick="calcPress('*')">×</button><br>
           <button onclick="calcPress('0')">0</button>
           <button onclick="calcPress('.')">.</button>
           <button onclick="calcPress('=')">=</button>
@@ -183,69 +195,68 @@
   </div>
 
   <script>
-    let userPass = "";
-    let userName = "User";
+    let realName = "User";
+    let realPass = "";
 
     function showConditions() {
-      const name = document.getElementById("name-input").value.trim();
-      const pass = document.getElementById("pass-input").value.trim();
-      const err = document.getElementById("setup-error");
-      if (pass.length < 6) {
-        err.textContent = "Password should be minimum 6 digits.";
+      const name = document.getElementById("name").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("setup-error");
+      if (pass.length < 2) {
+        errorBox.textContent = "Password must be at least 2 digits.";
         return;
       }
-      userPass = pass;
-      userName = name || "User";
-      document.getElementById("startup-screen").classList.add("hidden");
-      document.getElementById("condition-screen").classList.remove("hidden");
+      realName = name || "User";
+      realPass = pass;
+      document.getElementById("startup").classList.add("hidden");
+      document.getElementById("conditions").classList.remove("hidden");
     }
 
-    function completeSetup() {
-      document.getElementById("condition-screen").classList.add("hidden");
-      document.getElementById("login-title").textContent = userName;
-      document.getElementById("login-screen").classList.remove("hidden");
+    function goToLogin() {
+      document.getElementById("conditions").classList.add("hidden");
+      document.getElementById("login-title").textContent = realName;
+      document.getElementById("login").classList.remove("hidden");
     }
 
-    function attemptLogin() {
-      const entered = document.getElementById("login-pass").value;
-      const errorBox = document.getElementById("login-error");
-      if (entered === userPass) {
-        document.getElementById("login-screen").classList.add("hidden");
+    function login() {
+      const passInput = document.getElementById("login-input").value;
+      const error = document.getElementById("login-error");
+      if (passInput === realPass) {
+        document.getElementById("login").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
-        errorBox.textContent = "";
       } else {
-        errorBox.textContent = "Incorrect password.";
+        error.textContent = "Wrong password.";
       }
     }
 
-    function openApp(appId) {
-      document.querySelectorAll(".window").forEach(win => win.style.display = "none");
-      document.getElementById(appId).style.display = "flex";
+    function openApp(id) {
+      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
     }
 
     function loadSite() {
-      const url = document.getElementById("url").value;
-      const msg = document.getElementById("browser-msg");
+      const input = document.getElementById("url").value;
       const iframe = document.getElementById("iframe");
-      if (url.includes("wikipedia.org") || url.includes("spotify.com")) {
-        iframe.src = url;
+      const msg = document.getElementById("browser-msg");
+      if (input.includes("wikipedia.org")) {
+        iframe.src = input;
         msg.textContent = "";
       } else {
-        msg.textContent = "URL not found, EnforkOS runs Wikipedia in browser only.";
+        msg.textContent = "Only Wikipedia supported. Use https://";
       }
     }
 
-    function calcPress(key) {
-      const display = document.getElementById("calc-display");
-      if (key === 'C') display.value = '';
-      else if (key === '=') {
+    function calcPress(val) {
+      const disp = document.getElementById("calc-display");
+      if (val === 'C') disp.value = '';
+      else if (val === '=') {
         try {
-          display.value = eval(display.value || '0');
+          disp.value = eval(disp.value);
         } catch {
-          display.value = 'Error';
+          disp.value = 'Error';
         }
       } else {
-        display.value += key;
+        disp.value += val;
       }
     }
   </script>
