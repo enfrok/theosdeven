@@ -85,6 +85,12 @@
       overflow: auto;
     }
     .error { color: red; font-size: 0.9rem; margin-top: 5px; }
+    .calc-buttons button {
+      width: 25%;
+      padding: 10px;
+      font-size: 1.1rem;
+      margin: 2px;
+    }
   </style>
 </head>
 <body>
@@ -155,10 +161,21 @@
       <div class="window-header">Calculator</div>
       <div class="window-body">
         <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
-        <div>
+        <div class="calc-buttons">
+          <button onclick="calcPress('7')">7</button>
+          <button onclick="calcPress('8')">8</button>
+          <button onclick="calcPress('9')">9</button>
+          <button onclick="calcPress('+')">+</button><br>
+          <button onclick="calcPress('4')">4</button>
+          <button onclick="calcPress('5')">5</button>
+          <button onclick="calcPress('6')">6</button>
+          <button onclick="calcPress('-')">-</button><br>
           <button onclick="calcPress('1')">1</button>
           <button onclick="calcPress('2')">2</button>
-          <button onclick="calcPress('+')">+</button>
+          <button onclick="calcPress('3')">3</button>
+          <button onclick="calcPress('*')">×</button><br>
+          <button onclick="calcPress('0')">0</button>
+          <button onclick="calcPress('.')">.</button>
           <button onclick="calcPress('=')">=</button>
           <button onclick="calcPress('C')">C</button>
         </div>
