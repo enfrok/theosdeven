@@ -46,6 +46,20 @@
       pointer-events: none;
     }
 
+    input, button, textarea {
+      padding: 10px;
+      margin: 8px 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      background: var(--primary);
+      color: var(--white);
+      cursor: pointer;
+    }
+
     .taskbar {
       position: absolute;
       bottom: 0;
@@ -96,62 +110,127 @@
   </style>
 </head>
 <body>
-  <div class="taskbar">
-    <div class="icon" onclick="openApp('browser')">🌐</div>
-    <div class="icon" onclick="openApp('settings')">⚙️</div>
-    <div class="icon" onclick="openApp('calc')">🧮</div>
-    <div class="icon" onclick="openApp('notepad')">📝</div>
+  <div class="screen" id="startup">
+    <h1>Welcome to EnfrokOS</h1>
+    <p>This OS includes Browser, Settings, Calculator, and Notepad.<br>Please enter your details to begin.</p>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="password" id="password" placeholder="Create a password">
+    <div class="error" id="setup-error" style="color: red"></div>
+    <button onclick="showConditions()">Continue</button>
   </div>
 
-  <div class="window" id="browser">
-    <div class="window-header">Browser</div>
-    <div class="window-body">
-      <input type="text" id="url" placeholder="Only Wikipedia supported">
-      <button onclick="loadSite()">Go</button>
-      <iframe id="iframe" style="width:100%; height:200px;"></iframe>
-      <div id="browser-msg"></div>
+  <div class="screen hidden" id="conditions">
+    <h2>Conditions in EnfrokOS</h2>
+    <ul style="text-align:left; max-width: 400px">
+      <li>• Minimising on EnfrokOS is currently not available.</li>
+      <li>• There are currently four apps: Browser, Settings, Calculator, Notepad.</li>
+      <li>• Settings app is incomplete and would be functioning soon.</li>
+      <li>• Shifting apps from one place to another is not available yet.</li>
+    </ul>
+    <h3 style="margin-top: 20px">Warning</h3>
+    <p style="max-width: 400px; color: #ffb3b3">Do not write any of your important information in the app 'Notepad' because after you refresh all data would be removed from the Operating System.</p>
+    <button onclick="goToLogin()">Continue</button>
+  </div>
+
+  <div class="screen hidden" id="login">
+    <h1 id="login-title">Login</h1>
+    <input type="password" id="login-input" placeholder="Enter password">
+    <div class="error" id="login-error" style="color: red"></div>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div class="hidden" id="desktop">
+    <div class="taskbar">
+      <div class="icon" onclick="openApp('browser')">🌐</div>
+      <div class="icon" onclick="openApp('settings')">⚙️</div>
+      <div class="icon" onclick="openApp('calc')">🧮</div>
+      <div class="icon" onclick="openApp('notepad')">📝</div>
     </div>
-  </div>
 
-  <div class="window" id="settings">
-    <div class="window-header">Settings</div>
-    <div class="window-body">Settings won't work as it is incomplete.</div>
-  </div>
+    <div class="window" id="browser">
+      <div class="window-header">Browser</div>
+      <div class="window-body">
+        <input type="text" id="url" placeholder="Only Wikipedia supported">
+        <button onclick="loadSite()">Go</button>
+        <iframe id="iframe" style="width:100%; height:200px;"></iframe>
+        <div id="browser-msg"></div>
+      </div>
+    </div>
 
-  <div class="window" id="calc">
-    <div class="window-header">Calculator</div>
-    <div class="window-body">
-      <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
-      <div style="margin-top: 10px;">
-        <button onclick="calcPress('7')">7</button>
-        <button onclick="calcPress('8')">8</button>
-        <button onclick="calcPress('9')">9</button>
-        <button onclick="calcPress('+')">+</button><br>
-        <button onclick="calcPress('4')">4</button>
-        <button onclick="calcPress('5')">5</button>
-        <button onclick="calcPress('6')">6</button>
-        <button onclick="calcPress('-')">-</button><br>
-        <button onclick="calcPress('1')">1</button>
-        <button onclick="calcPress('2')">2</button>
-        <button onclick="calcPress('3')">3</button>
-        <button onclick="calcPress('*')">×</button><br>
-        <button onclick="calcPress('0')">0</button>
-        <button onclick="calcPress('.')">.</button>
-        <button onclick="calcPress('=')">=</button>
-        <button onclick="calcPress('C')">C</button>
+    <div class="window" id="settings">
+      <div class="window-header">Settings</div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
+    </div>
+
+    <div class="window" id="calc">
+      <div class="window-header">Calculator</div>
+      <div class="window-body">
+        <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
+        <div style="margin-top: 10px;">
+          <button onclick="calcPress('7')">7</button>
+          <button onclick="calcPress('8')">8</button>
+          <button onclick="calcPress('9')">9</button>
+          <button onclick="calcPress('+')">+</button><br>
+          <button onclick="calcPress('4')">4</button>
+          <button onclick="calcPress('5')">5</button>
+          <button onclick="calcPress('6')">6</button>
+          <button onclick="calcPress('-')">-</button><br>
+          <button onclick="calcPress('1')">1</button>
+          <button onclick="calcPress('2')">2</button>
+          <button onclick="calcPress('3')">3</button>
+          <button onclick="calcPress('*')">×</button><br>
+          <button onclick="calcPress('0')">0</button>
+          <button onclick="calcPress('.')">.</button>
+          <button onclick="calcPress('=')">=</button>
+          <button onclick="calcPress('C')">C</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="notepad">
+      <div class="window-header">Notepad</div>
+      <div class="window-body">
+        <textarea id="note" style="width:100%; height:150px;"></textarea>
+        <button onclick="saveNote()">Save</button>
       </div>
     </div>
   </div>
 
-  <div class="window" id="notepad">
-    <div class="window-header">Notepad</div>
-    <div class="window-body">
-      <textarea id="note" style="width:100%; height:150px;"></textarea>
-      <button onclick="saveNote()">Save</button>
-    </div>
-  </div>
-
   <script>
+    let realName = "User";
+    let realPass = "";
+
+    function showConditions() {
+      const name = document.getElementById("name").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("setup-error");
+      if (pass.length < 2) {
+        errorBox.textContent = "Password must be at least 2 digits.";
+        return;
+      }
+      realName = name || "User";
+      realPass = pass;
+      document.getElementById("startup").classList.add("hidden");
+      document.getElementById("conditions").classList.remove("hidden");
+    }
+
+    function goToLogin() {
+      document.getElementById("conditions").classList.add("hidden");
+      document.getElementById("login-title").textContent = realName;
+      document.getElementById("login").classList.remove("hidden");
+    }
+
+    function login() {
+      const passInput = document.getElementById("login-input").value;
+      const error = document.getElementById("login-error");
+      if (passInput === realPass) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("desktop").classList.remove("hidden");
+      } else {
+        error.textContent = "Wrong password.";
+      }
+    }
+
     function openApp(id) {
       document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
       document.getElementById(id).style.display = 'flex';
