@@ -250,7 +250,7 @@
         document.getElementById("login").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
       } else {
-        error.textContent = "Wrong password.";
+        error.textContent = "The password which was entered is wrong.";
       }
     }
 
@@ -275,7 +275,7 @@
         iframe.src = input;
         msg.textContent = "";
       } else {
-        msg.textContent = "Only Wikipedia supported. Use https://";
+        msg.textContent = "Use https:// and URL of Wikipedia is 'www. wikipedia.org'";
       }
     }
 
@@ -294,7 +294,8 @@
     }
 
     function saveNote() {
-      alert("Note saved! (but will be lost after refresh)");
+      alert("Note saving success!");
+      }
     }
 
     function sendToAI() {
@@ -319,7 +320,7 @@
           const result = eval(message);
           chatbox.innerHTML += `<p><b>AI:</b> The answer is ${result}</p>`;
         } catch {
-          chatbox.innerHTML += `<p><b>AI:</b> I couldn't calculate that.</p>`;
+          chatbox.innerHTML += `<p><b>AI:</b> The Enfrokian Bot is unable to solve algebra questions.</p>`;
         }
       } else if (["hi", "hello", "hey"].some(word => message.includes(word))) {
         chatbox.innerHTML += `<p><b>AI:</b> Hello, how can I help you?</p>`;
