@@ -118,7 +118,7 @@
   <!-- Startup screen -->
   <div class="screen" id="startup">
     <h1>Welcome to EnfrokOS</h1>
-    <p>This OS includes Browser, Settings, Calculator, and Notepad.<br>Please enter your details to begin.</p>
+    <p>This OS includes Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.<br>Please enter your details to begin.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
     <div class="error" id="setup-error"></div>
@@ -130,7 +130,7 @@
     <h2>Conditions in EnfrokOS</h2>
     <ul style="text-align:left; max-width: 400px">
       <li>• Minimising on EnfrokOS is currently not available.</li>
-      <li>• There are currently four apps: Browser, Settings, Calculator, and Notepad.</li>
+      <li>• There are currently five apps: Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</li>
       <li>• Settings app is incomplete and would be functioning soon.</li>
       <li>• Shifting apps from one place to another is not available yet.</li>
     </ul>
@@ -154,6 +154,7 @@
       <div class="icon" onclick="openApp('settings')">⚙️</div>
       <div class="icon" onclick="openApp('calc')">🧮</div>
       <div class="icon" onclick="openApp('notepad')">📝</div>
+      <div class="icon" onclick="openApp('ai')">🤖</div>
     </div>
 
     <div class="window" id="browser">
@@ -201,6 +202,15 @@
       <div class="window-body">
         <textarea id="note" style="width:100%; height:150px;"></textarea>
         <button onclick="saveNote()">Save</button>
+      </div>
+    </div>
+
+    <div class="window" id="ai">
+      <div class="window-header">The Enfrokian Intelligence</div>
+      <div class="window-body">
+        <div id="chatbox" style="height: 150px; overflow-y: auto; font-size: 0.9rem; margin-bottom:10px;"></div>
+        <input id="aiInput" placeholder="Ask me anything..." style="width: 100%;">
+        <button onclick="sendToAI()">Send</button>
       </div>
     </div>
   </div>
@@ -273,6 +283,34 @@
 
     function saveNote() {
       alert("Note saved! (but will be lost after refresh)");
+    }
+
+    async function sendToAI() {
+      const input = document.getElementById("aiInput");
+      const chatbox = document.getElementById("chatbox");
+      const question = input.value;
+      chatbox.innerHTML += `<p><b>You:</b> ${question}</p>`;
+      input.value = "Thinking...";
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "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"
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: question }]
+          })
+        });
+        const data = await res.json();
+        const reply = data.choices[0].message.content;
+        chatbox.innerHTML += `<p><b>AI:</b> ${reply}</p>`;
+        input.value = "";
+      } catch {
+        chatbox.innerHTML += `<p><b>AI:</b> Error getting response.</p>`;
+        input.value = "";
+      }
     }
   </script>
 </body>
