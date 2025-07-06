@@ -112,7 +112,7 @@
 <body>
   <!-- Setup screen -->
   <div class="screen" id="startup">
-    <h1>Welcome to EnfrokOS</h1>
+    <h1>EnfrokOS Setup</h1>
     <p>Please enter your name and password to begin setup.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
@@ -136,13 +136,11 @@
 
   <!-- Login screen -->
   <div class="screen hidden" id="login">
-    <div class="login-box">
-      <h2>Welcome back, <span id="login-user">User</span></h2>
-      <p>Please enter your password to continue.</p>
-      <input type="password" id="login-input" placeholder="Enter password">
-      <div class="error" id="login-error"></div>
-      <button onclick="login()">Login</button>
-    </div>
+    <h2 id="login-user">Welcome</h2>
+    <p>Please enter your password to continue.</p>
+    <input type="password" id="login-input" placeholder="Enter password">
+    <div class="error" id="login-error"></div>
+    <button onclick="login()">Login</button>
   </div>
 
   <!-- Desktop -->
@@ -152,9 +150,67 @@
       <div class="icon" onclick="openApp('settings')">⚙️</div>
       <div class="icon" onclick="openApp('calc')">🧮</div>
       <div class="icon" onclick="openApp('notepad')">📝</div>
+      <div class="icon" onclick="openApp('ai')">🤖</div>
       <div class="icon" onclick="lockOS()">🔒</div>
     </div>
-    <!-- App windows (add them as needed) -->
+
+    <div class="window" id="browser">
+      <div class="window-header">Browser</div>
+      <div class="window-body">
+        <input type="text" id="url" placeholder="Only Wikipedia supported">
+        <button onclick="loadSite()">Go</button>
+        <iframe id="iframe" style="width:100%; height:200px;"></iframe>
+        <div id="browser-msg"></div>
+      </div>
+    </div>
+
+    <div class="window" id="settings">
+      <div class="window-header">Settings</div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
+    </div>
+
+    <div class="window" id="calc">
+      <div class="window-header">Calculator</div>
+      <div class="window-body">
+        <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
+        <div style="margin-top: 10px;">
+          <button onclick="calcPress('7')">7</button>
+          <button onclick="calcPress('8')">8</button>
+          <button onclick="calcPress('9')">9</button>
+          <button onclick="calcPress('+')">+</button><br>
+          <button onclick="calcPress('4')">4</button>
+          <button onclick="calcPress('5')">5</button>
+          <button onclick="calcPress('6')">6</button>
+          <button onclick="calcPress('-')">-</button><br>
+          <button onclick="calcPress('1')">1</button>
+          <button onclick="calcPress('2')">2</button>
+          <button onclick="calcPress('3')">3</button>
+          <button onclick="calcPress('*')">×</button><br>
+          <button onclick="calcPress('0')">0</button>
+          <button onclick="calcPress('.')">.</button>
+          <button onclick="calcPress('=')">=</button>
+          <button onclick="calcPress('C')">C</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="notepad">
+      <div class="window-header">Notepad</div>
+      <div class="window-body">
+        <textarea id="note" style="width:100%; height:150px;"></textarea>
+        <button onclick="saveNote()">Save</button>
+      </div>
+    </div>
+
+    <div class="window" id="ai">
+      <div class="window-header">The Enfrokian Intelligence</div>
+      <div class="window-body">
+        <p>The AI is unfortunately limited, meaning you can only ask limited questions.</p>
+        <div id="chatbox" style="height: 150px; overflow-y: auto; font-size: 0.9rem; margin-bottom:10px;"></div>
+        <input id="aiInput" placeholder="Ask me anything..." style="width: 100%;">
+        <button onclick="sendToAI()">Send</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -179,6 +235,7 @@
       document.getElementById("conditions").classList.add("hidden");
       document.getElementById("login-user").textContent = realName;
       document.getElementById("login").classList.remove("hidden");
+      document.body.style.background = "#888";
     }
 
     function login() {
@@ -198,6 +255,72 @@
       document.getElementById("login").classList.remove("hidden");
       document.getElementById("login-input").value = "";
       document.getElementById("login-error").textContent = "";
+    }
+
+    function openApp(id) {
+      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function loadSite() {
+      const input = document.getElementById("url").value;
+      const iframe = document.getElementById("iframe");
+      const msg = document.getElementById("browser-msg");
+      if (input.includes("wikipedia.org")) {
+        iframe.src = input;
+        msg.textContent = "";
+      } else {
+        msg.textContent = "Only Wikipedia supported. Use https://";
+      }
+    }
+
+    function calcPress(val) {
+      const disp = document.getElementById("calc-display");
+      if (val === 'C') disp.value = '';
+      else if (val === '=') {
+        try {
+          disp.value = eval(disp.value);
+        } catch {
+          disp.value = 'Error';
+        }
+      } else {
+        disp.value += val;
+      }
+    }
+
+    function saveNote() {
+      alert("Note saved! (but will be lost after refresh)");
+    }
+
+    function sendToAI() {
+      const input = document.getElementById("aiInput");
+      const chatbox = document.getElementById("chatbox");
+      const message = input.value.trim().toLowerCase();
+      chatbox.innerHTML += `<p><b>You:</b> ${input.value}</p>`;
+      input.value = "";
+
+      if (message.includes("your name")) {
+        chatbox.innerHTML += `<p><b>AI:</b> My name is Peré Enfrokian meaning I'm Pure Enfrokian.</p>`;
+      } else if (message.includes("joke")) {
+        const jokes = ["Why don't scientists trust atoms? Because they make up everything!", "Why did the math book look sad? Because it had too many problems.", "Why was the computer cold? It left its Windows open."];
+        const random = jokes[Math.floor(Math.random() * jokes.length)];
+        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
+      } else if (message.includes("horror")) {
+        const stories = ["One night, a shadow watched me sleep. I never saw it, but I felt it...", "They called from inside the house, but I was home alone.", "My reflection blinked. I didn’t."];
+        const random = stories[Math.floor(Math.random() * stories.length)];
+        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
+      } else if (message.match(/\d+[\+\-\*\/]\d+/)) {
+        try {
+          const result = eval(message);
+          chatbox.innerHTML += `<p><b>AI:</b> The answer is ${result}</p>`;
+        } catch {
+          chatbox.innerHTML += `<p><b>AI:</b> I couldn't calculate that.</p>`;
+        }
+      } else if (["hi", "hello", "hey"].some(word => message.includes(word))) {
+        chatbox.innerHTML += `<p><b>AI:</b> Hello, how can I help you?</p>`;
+      } else {
+        chatbox.innerHTML += `<p><b>AI:</b> I'm limited in what I can answer right now.</p>`;
+      }
     }
   </script>
 </body>
