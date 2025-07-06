@@ -46,7 +46,7 @@
       pointer-events: none;
     }
 
-    input, button {
+    input, button, textarea {
       padding: 10px;
       margin: 8px 0;
       font-size: 1rem;
@@ -118,7 +118,7 @@
   <!-- Startup screen -->
   <div class="screen" id="startup">
     <h1>Welcome to EnfrokOS</h1>
-    <p>This OS includes Browser, Settings, and Calculator.<br>Please enter your details to begin.</p>
+    <p>This OS includes Browser, Settings, Calculator, and Notepad.<br>Please enter your details to begin.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
     <div class="error" id="setup-error"></div>
@@ -130,10 +130,12 @@
     <h2>Conditions in EnfrokOS</h2>
     <ul style="text-align:left; max-width: 400px">
       <li>• Minimising on EnfrokOS is currently not available.</li>
-      <li>• There are currently three apps: Browser, Settings and Calculator.</li>
+      <li>• There are currently four apps: Browser, Settings, Calculator, and Notepad.</li>
       <li>• Settings app is incomplete and would be functioning soon.</li>
       <li>• Shifting apps from one place to another is not available yet.</li>
     </ul>
+    <h3 style="margin-top: 20px">Warning</h3>
+    <p style="max-width: 400px; color: #ffb3b3">Do not write any of your important information in the app 'Notepad' because after you refresh all data would be removed from the Operating System.</p>
     <button onclick="goToLogin()">Continue</button>
   </div>
 
@@ -151,6 +153,7 @@
       <div class="icon" onclick="openApp('browser')">🌐</div>
       <div class="icon" onclick="openApp('settings')">⚙️</div>
       <div class="icon" onclick="openApp('calc')">🧮</div>
+      <div class="icon" onclick="openApp('notepad')">📝</div>
     </div>
 
     <div class="window" id="browser">
@@ -165,11 +168,7 @@
 
     <div class="window" id="settings">
       <div class="window-header">Settings</div>
-      <div class="window-body">OPERATING SYSTEM Version: EnfrokOs 1 First 
-        About:
-      This Web-operating system is created by Arya Nath. 
-      Some apps and websites do not work properly which would be fixed soon. 
-      There are only 3 apps: Settings, Calculator and Browser. </div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
     </div>
 
     <div class="window" id="calc">
@@ -194,6 +193,14 @@
           <button onclick="calcPress('=')">=</button>
           <button onclick="calcPress('C')">C</button>
         </div>
+      </div>
+    </div>
+
+    <div class="window" id="notepad">
+      <div class="window-header">Notepad</div>
+      <div class="window-body">
+        <textarea id="note" style="width:100%; height:150px;"></textarea>
+        <button onclick="saveNote()">Save</button>
       </div>
     </div>
   </div>
@@ -262,6 +269,10 @@
       } else {
         disp.value += val;
       }
+    }
+
+    function saveNote() {
+      alert("Note saved! (but will be lost after refresh)");
     }
   </script>
 </body>
