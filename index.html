@@ -292,12 +292,18 @@
       chatbox.innerHTML += `<p><b>You:</b> ${question}</p>`;
       input.value = "Thinking...";
       try {
-        const res = await fetch("https://corsproxy.io/?https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
-          },
+        const res = await fetch("https://api.allorigins.win/raw?url=https://api.openai.com/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer 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"
+  },
+  body: JSON.stringify({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: question }]
+  })
+});
+
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: question }]
