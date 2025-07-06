@@ -112,7 +112,8 @@
 <body>
   <!-- Setup screen -->
   <div class="screen" id="startup">
-    <h1>EnfrokOS Setup</h1>
+    <h1>Welcome to EnfrokOS</h1>
+    To learn how to use EnfrokOS, after setup click Settings.
     <p>Please enter your name and password to begin setup.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
@@ -126,7 +127,7 @@
     <ul style="text-align:left; max-width: 400px">
       <li>• Minimising on EnfrokOS is currently not available.</li>
       <li>• There are currently five apps: Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</li>
-      <li>• Settings app is incomplete and would be functioning soon.</li>
+      <li>• Settings app cannot be used to edit EnfrokO for now.</li>
       <li>• Shifting apps from one place to another is not available yet.</li>
     </ul>
     <h3 style="margin-top: 20px">Warning</h3>
@@ -137,7 +138,7 @@
   <!-- Login screen -->
   <div class="screen hidden" id="login">
     <h2 id="login-user">Welcome</h2>
-    <p>Please enter your password to continue.</p>
+    <p>Please enter the password you created during setup.</p>
     <input type="password" id="login-input" placeholder="Enter password">
     <div class="error" id="login-error"></div>
     <button onclick="login()">Login</button>
@@ -166,7 +167,11 @@
 
     <div class="window" id="settings">
       <div class="window-header">Settings</div>
-      <div class="window-body">Settings won't work as it is incomplete.</div>
+      <div class="window-body">Click the lock icon to Lock the EnfrokOS
+        Click the Robot icon app to use AI
+        Click the note + pencil icon for Notepad.
+        Click the Internt icon for browser (Wikipedia only...)
+        Click A Box with Red balls for calculator..</div>
     </div>
 
     <div class="window" id="calc">
