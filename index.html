@@ -46,7 +46,7 @@
       pointer-events: none;
     }
 
-    input, button, textarea {
+    input, button, textarea, select {
       padding: 10px;
       margin: 8px 0;
       font-size: 1rem;
@@ -110,17 +110,16 @@
   </style>
 </head>
 <body>
-  <!-- Setup screen -->
+  <!-- Startup screen -->
   <div class="screen" id="startup">
-    <h1>EnfrokOS Setup</h1>
-    <p>Please enter your name and password to begin setup.</p>
+    <h1>Setup</h1>
+    <p>Enter your name and password to get started.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
-    <div class="error" id="setup-error"></div>
     <button onclick="showConditions()">Continue</button>
   </div>
 
-  <!-- Conditions -->
+  <!-- Warning screen -->
   <div class="screen hidden" id="conditions">
     <h2>Conditions in EnfrokOS</h2>
     <ul style="text-align:left; max-width: 400px">
@@ -134,12 +133,10 @@
     <button onclick="goToLogin()">Continue</button>
   </div>
 
-  <!-- Login -->
+  <!-- Login screen -->
   <div class="screen hidden" id="login">
-    <h2 id="login-user">User Login</h2>
-    <p>Please enter your password to continue.</p>
+    <h1 id="login-title">Login</h1>
     <input type="password" id="login-input" placeholder="Enter password">
-    <div class="error" id="login-error"></div>
     <button onclick="login()">Login</button>
   </div>
 
@@ -151,7 +148,24 @@
       <div class="icon" onclick="openApp('calc')">🧮</div>
       <div class="icon" onclick="openApp('notepad')">📝</div>
       <div class="icon" onclick="openApp('ai')">🤖</div>
-      <div class="icon" onclick="lockOS()">🔒</div>
+    </div>
+
+    <div class="window" id="settings">
+      <div class="window-header">Settings</div>
+      <div class="window-body">
+        <label for="bgColor">Change Background Color:</label>
+        <input type="color" id="bgColor" value="#888"><br><br>
+
+        <label for="fontSelect">Font Style:</label>
+        <select id="fontSelect">
+          <option value="-apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif">San Francisco</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Courier New, monospace">Courier New</option>
+          <option value="Georgia, serif">Georgia</option>
+        </select><br><br>
+
+        <button onclick="applySettings()">Apply Changes</button>
+      </div>
     </div>
 
     <div class="window" id="browser">
@@ -162,11 +176,6 @@
         <iframe id="iframe" style="width:100%; height:200px;"></iframe>
         <div id="browser-msg"></div>
       </div>
-    </div>
-
-    <div class="window" id="settings">
-      <div class="window-header">Settings</div>
-      <div class="window-body">Settings won't work as it is incomplete.</div>
     </div>
 
     <div class="window" id="calc">
@@ -205,10 +214,9 @@
     <div class="window" id="ai">
       <div class="window-header">The Enfrokian Intelligence</div>
       <div class="window-body">
-        <p>The AI is unfortunately limited, meaning you can only ask limited questions.</p>
         <div id="chatbox" style="height: 150px; overflow-y: auto; font-size: 0.9rem; margin-bottom:10px;"></div>
         <input id="aiInput" placeholder="Ask me anything..." style="width: 100%;">
-        <button onclick="sendToAI()">Send</button>
+        <button onclick="askAI()">Send</button>
       </div>
     </div>
   </div>
@@ -220,9 +228,8 @@
     function showConditions() {
       const name = document.getElementById("name").value.trim();
       const pass = document.getElementById("password").value.trim();
-      const errorBox = document.getElementById("setup-error");
       if (pass.length < 2) {
-        errorBox.textContent = "Password must be at least 2 digits.";
+        alert("Password must be at least 2 digits.");
         return;
       }
       realName = name || "User";
@@ -233,33 +240,32 @@
 
     function goToLogin() {
       document.getElementById("conditions").classList.add("hidden");
-      document.getElementById("login-user").textContent = realName;
+      document.getElementById("login-title").textContent = realName;
       document.getElementById("login").classList.remove("hidden");
-      document.body.style.background = "#888";
     }
 
     function login() {
       const passInput = document.getElementById("login-input").value;
-      const error = document.getElementById("login-error");
       if (passInput === realPass) {
         document.getElementById("login").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
       } else {
-        error.textContent = "Wrong password.";
+        alert("Wrong password");
       }
-    }
-
-    function lockOS() {
-      document.getElementById("desktop").classList.add("hidden");
-      document.getElementById("login-user").textContent = realName;
-      document.getElementById("login").classList.remove("hidden");
-      document.getElementById("login-input").value = "";
-      document.getElementById("login-error").textContent = "";
     }
 
     function openApp(id) {
       document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
       document.getElementById(id).style.display = 'flex';
+    }
+
+    function applySettings() {
+      const color = document.getElementById("bgColor").value;
+      const font = document.getElementById("fontSelect").value;
+      document.body.style.background = color;
+      document.querySelectorAll('*').forEach(el => {
+        el.style.fontFamily = font;
+      });
     }
 
     function loadSite() {
@@ -292,35 +298,46 @@
       alert("Note saved! (but will be lost after refresh)");
     }
 
-    function sendToAI() {
-      const input = document.getElementById("aiInput");
+    function askAI() {
       const chatbox = document.getElementById("chatbox");
-      const message = input.value.trim().toLowerCase();
-      chatbox.innerHTML += `<p><b>You:</b> ${input.value}</p>`;
+      const input = document.getElementById("aiInput");
+      const question = input.value.toLowerCase();
       input.value = "";
+      chatbox.innerHTML += `<p><b>You:</b> ${question}</p>`;
 
-      if (message.includes("your name")) {
-        chatbox.innerHTML += `<p><b>AI:</b> My name is Peré Enfrokian meaning I'm Pure Enfrokian.</p>`;
-      } else if (message.includes("joke")) {
-        const jokes = ["Why don't scientists trust atoms? Because they make up everything!", "Why did the math book look sad? Because it had too many problems.", "Why was the computer cold? It left its Windows open."];
-        const random = jokes[Math.floor(Math.random() * jokes.length)];
-        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
-      } else if (message.includes("horror")) {
-        const stories = ["One night, a shadow watched me sleep. I never saw it, but I felt it...", "They called from inside the house, but I was home alone.", "My reflection blinked. I didn’t."];
-        const random = stories[Math.floor(Math.random() * stories.length)];
-        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
-      } else if (message.match(/\d+[\+\-\*\/]\d+/)) {
+      let response = "The AI is unfortunately limited, meaning you can only ask limited questions.";
+
+      if (question.includes("what's your name") || question.includes("your name")) {
+        response = "My name is Peré Enfrokian, meaning I'm Pure Enfrokian.";
+      } else if (question.includes("hi") || question.includes("hello") || question.includes("hey")) {
+        response = "Hello, how can I help you?";
+      } else if (question.includes("joke")) {
+        const jokes = [
+          "Why don't scientists trust atoms? Because they make up everything!",
+          "Why did the scarecrow win an award? Because he was outstanding in his field!",
+          "Why did the math book look sad? Because it had too many problems!",
+          "Why don't eggs tell jokes? Because they'd crack each other up!",
+          "I'm reading a book on anti-gravity. It's impossible to put down!"
+        ];
+        response = jokes[Math.floor(Math.random() * jokes.length)];
+      } else if (question.includes("horror")) {
+        const stories = [
+          "It was midnight. A tap on the window. But no one was there...",
+          "The lights flickered. Her phone lit up. 'I see you', it said.",
+          "He woke up and saw a shadow standing over his bed. It smiled.",
+          "In the mirror, a reflection blinked... but she didn’t.",
+          "Footsteps in the attic. He lived alone."
+        ];
+        response = stories[Math.floor(Math.random() * stories.length)];
+      } else if (question.match(/[0-9\+\-\*\/\.\(\)]+/)) {
         try {
-          const result = eval(message);
-          chatbox.innerHTML += `<p><b>AI:</b> The answer is ${result}</p>`;
+          response = eval(question);
         } catch {
-          chatbox.innerHTML += `<p><b>AI:</b> I couldn't calculate that.</p>`;
+          response = "I couldn't solve that math problem.";
         }
-      } else if (["hi", "hello", "hey"].some(word => message.includes(word))) {
-        chatbox.innerHTML += `<p><b>AI:</b> Hello, how can I help you?</p>`;
-      } else {
-        chatbox.innerHTML += `<p><b>AI:</b> I'm limited in what I can answer right now.</p>`;
       }
+
+      chatbox.innerHTML += `<p><b>AI:</b> ${response}</p>`;
     }
   </script>
 </body>
