@@ -110,28 +110,78 @@
   </style>
 </head>
 <body>
-  <!-- Settings Window -->
-  <div class="window" id="settings">
-    <div class="window-header">Settings</div>
-    <div class="window-body">
-      <label for="bgColor">Change Background Color:</label>
-      <input type="color" id="bgColor" value="#888"><br><br>
+  <!-- Setup Screen -->
+  <div class="screen" id="setup-screen">
+    <h1>Welcome to EnfrokOS</h1>
+    <p>Enter your name and password to get started:</p>
+    <input type="text" id="userName" placeholder="Enter your name">
+    <input type="password" id="userPassword" placeholder="Enter password">
+    <button onclick="proceedToLogin()">Continue</button>
+  </div>
 
-      <label for="fontSelect">Font Style:</label>
-      <select id="fontSelect">
-        <option value="-apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif">San Francisco</option>
-        <option value="Arial, sans-serif">Arial</option>
-        <option value="Courier New, monospace">Courier New</option>
-        <option value="Georgia, serif">Georgia</option>
-      </select><br><br>
+  <!-- Login Screen -->
+  <div class="screen hidden" id="login-screen">
+    <h1 id="login-title">Login</h1>
+    <input type="password" id="loginPassword" placeholder="Enter your password">
+    <div id="login-error" style="color: red"></div>
+    <button onclick="loginUser()">Login</button>
+  </div>
 
-      <button onclick="applySettings()">Apply Changes</button>
+  <!-- Desktop with Taskbar -->
+  <div class="hidden" id="desktop">
+    <div class="taskbar">
+      <div class="icon" onclick="toggleWindow('settings')">⚙️</div>
+      <div class="icon" onclick="lockSystem()">🔒</div>
+    </div>
+
+    <!-- Settings Window -->
+    <div class="window" id="settings">
+      <div class="window-header">Settings</div>
+      <div class="window-body">
+        <label for="bgColor">Change Background Color:</label>
+        <input type="color" id="bgColor" value="#888"><br><br>
+
+        <label for="fontSelect">Font Style:</label>
+        <select id="fontSelect">
+          <option value="-apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif">San Francisco</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Courier New, monospace">Courier New</option>
+          <option value="Georgia, serif">Georgia</option>
+        </select><br><br>
+
+        <button onclick="applySettings()">Apply Changes</button>
+      </div>
     </div>
   </div>
 
-  <!-- Other Windows & Startup/Login Logic Comes Here -->
-
   <script>
+    let savedName = '';
+    let savedPassword = '';
+
+    function proceedToLogin() {
+      const name = document.getElementById("userName").value.trim();
+      const pass = document.getElementById("userPassword").value.trim();
+      if (pass.length < 2) {
+        alert("Password must be at least 2 characters.");
+        return;
+      }
+      savedName = name;
+      savedPassword = pass;
+      document.getElementById("setup-screen").classList.add("hidden");
+      document.getElementById("login-title").textContent = name;
+      document.getElementById("login-screen").classList.remove("hidden");
+    }
+
+    function loginUser() {
+      const input = document.getElementById("loginPassword").value;
+      if (input === savedPassword) {
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("desktop").classList.remove("hidden");
+      } else {
+        document.getElementById("login-error").textContent = "Wrong password.";
+      }
+    }
+
     function applySettings() {
       const color = document.getElementById("bgColor").value;
       const font = document.getElementById("fontSelect").value;
@@ -139,6 +189,21 @@
       document.querySelectorAll('*').forEach(el => {
         el.style.fontFamily = font;
       });
+    }
+
+    function toggleWindow(id) {
+      const win = document.getElementById(id);
+      if (win.style.display === 'flex') {
+        win.style.display = 'none';
+      } else {
+        document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+        win.style.display = 'flex';
+      }
+    }
+
+    function lockSystem() {
+      document.getElementById("desktop").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
     }
   </script>
 </body>
