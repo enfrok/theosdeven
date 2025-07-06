@@ -110,155 +110,28 @@
   </style>
 </head>
 <body>
-  <!-- Startup screen -->
-  <div class="screen" id="startup">
-    <h1>Setup</h1>
-    <p>Enter your name and password to get started.</p>
-    <input type="text" id="name" placeholder="Enter your name">
-    <input type="password" id="password" placeholder="Create a password">
-    <button onclick="showConditions()">Continue</button>
-  </div>
+  <!-- Settings Window -->
+  <div class="window" id="settings">
+    <div class="window-header">Settings</div>
+    <div class="window-body">
+      <label for="bgColor">Change Background Color:</label>
+      <input type="color" id="bgColor" value="#888"><br><br>
 
-  <!-- Warning screen -->
-  <div class="screen hidden" id="conditions">
-    <h2>Conditions in EnfrokOS</h2>
-    <ul style="text-align:left; max-width: 400px">
-      <li>• Minimising on EnfrokOS is currently not available.</li>
-      <li>• There are currently five apps: Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</li>
-      <li>• Settings app is incomplete and would be functioning soon.</li>
-      <li>• Shifting apps from one place to another is not available yet.</li>
-    </ul>
-    <h3 style="margin-top: 20px">Warning</h3>
-    <p style="max-width: 400px; color: #ffb3b3">Do not write any of your important information in the app 'Notepad' because after you refresh all data would be removed from the Operating System.</p>
-    <button onclick="goToLogin()">Continue</button>
-  </div>
+      <label for="fontSelect">Font Style:</label>
+      <select id="fontSelect">
+        <option value="-apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif">San Francisco</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="Courier New, monospace">Courier New</option>
+        <option value="Georgia, serif">Georgia</option>
+      </select><br><br>
 
-  <!-- Login screen -->
-  <div class="screen hidden" id="login">
-    <h1 id="login-title">Login</h1>
-    <input type="password" id="login-input" placeholder="Enter password">
-    <button onclick="login()">Login</button>
-  </div>
-
-  <!-- Desktop -->
-  <div class="hidden" id="desktop">
-    <div class="taskbar">
-      <div class="icon" onclick="openApp('browser')">🌐</div>
-      <div class="icon" onclick="openApp('settings')">⚙️</div>
-      <div class="icon" onclick="openApp('calc')">🧮</div>
-      <div class="icon" onclick="openApp('notepad')">📝</div>
-      <div class="icon" onclick="openApp('ai')">🤖</div>
-    </div>
-
-    <div class="window" id="settings">
-      <div class="window-header">Settings</div>
-      <div class="window-body">
-        <label for="bgColor">Change Background Color:</label>
-        <input type="color" id="bgColor" value="#888"><br><br>
-
-        <label for="fontSelect">Font Style:</label>
-        <select id="fontSelect">
-          <option value="-apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif">San Francisco</option>
-          <option value="Arial, sans-serif">Arial</option>
-          <option value="Courier New, monospace">Courier New</option>
-          <option value="Georgia, serif">Georgia</option>
-        </select><br><br>
-
-        <button onclick="applySettings()">Apply Changes</button>
-      </div>
-    </div>
-
-    <div class="window" id="browser">
-      <div class="window-header">Browser</div>
-      <div class="window-body">
-        <input type="text" id="url" placeholder="Only Wikipedia supported">
-        <button onclick="loadSite()">Go</button>
-        <iframe id="iframe" style="width:100%; height:200px;"></iframe>
-        <div id="browser-msg"></div>
-      </div>
-    </div>
-
-    <div class="window" id="calc">
-      <div class="window-header">Calculator</div>
-      <div class="window-body">
-        <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
-        <div style="margin-top: 10px;">
-          <button onclick="calcPress('7')">7</button>
-          <button onclick="calcPress('8')">8</button>
-          <button onclick="calcPress('9')">9</button>
-          <button onclick="calcPress('+')">+</button><br>
-          <button onclick="calcPress('4')">4</button>
-          <button onclick="calcPress('5')">5</button>
-          <button onclick="calcPress('6')">6</button>
-          <button onclick="calcPress('-')">-</button><br>
-          <button onclick="calcPress('1')">1</button>
-          <button onclick="calcPress('2')">2</button>
-          <button onclick="calcPress('3')">3</button>
-          <button onclick="calcPress('*')">×</button><br>
-          <button onclick="calcPress('0')">0</button>
-          <button onclick="calcPress('.')">.</button>
-          <button onclick="calcPress('=')">=</button>
-          <button onclick="calcPress('C')">C</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="window" id="notepad">
-      <div class="window-header">Notepad</div>
-      <div class="window-body">
-        <textarea id="note" style="width:100%; height:150px;"></textarea>
-        <button onclick="saveNote()">Save</button>
-      </div>
-    </div>
-
-    <div class="window" id="ai">
-      <div class="window-header">The Enfrokian Intelligence</div>
-      <div class="window-body">
-        <div id="chatbox" style="height: 150px; overflow-y: auto; font-size: 0.9rem; margin-bottom:10px;"></div>
-        <input id="aiInput" placeholder="Ask me anything..." style="width: 100%;">
-        <button onclick="askAI()">Send</button>
-      </div>
+      <button onclick="applySettings()">Apply Changes</button>
     </div>
   </div>
+
+  <!-- Other Windows & Startup/Login Logic Comes Here -->
 
   <script>
-    let realName = "User";
-    let realPass = "";
-
-    function showConditions() {
-      const name = document.getElementById("name").value.trim();
-      const pass = document.getElementById("password").value.trim();
-      if (pass.length < 2) {
-        alert("Password must be at least 2 digits.");
-        return;
-      }
-      realName = name || "User";
-      realPass = pass;
-      document.getElementById("startup").classList.add("hidden");
-      document.getElementById("conditions").classList.remove("hidden");
-    }
-
-    function goToLogin() {
-      document.getElementById("conditions").classList.add("hidden");
-      document.getElementById("login-title").textContent = realName;
-      document.getElementById("login").classList.remove("hidden");
-    }
-
-    function login() {
-      const passInput = document.getElementById("login-input").value;
-      if (passInput === realPass) {
-        document.getElementById("login").classList.add("hidden");
-        document.getElementById("desktop").classList.remove("hidden");
-      } else {
-        alert("Wrong password");
-      }
-    }
-
-    function openApp(id) {
-      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
-      document.getElementById(id).style.display = 'flex';
-    }
-
     function applySettings() {
       const color = document.getElementById("bgColor").value;
       const font = document.getElementById("fontSelect").value;
@@ -266,78 +139,6 @@
       document.querySelectorAll('*').forEach(el => {
         el.style.fontFamily = font;
       });
-    }
-
-    function loadSite() {
-      const input = document.getElementById("url").value;
-      const iframe = document.getElementById("iframe");
-      const msg = document.getElementById("browser-msg");
-      if (input.includes("wikipedia.org")) {
-        iframe.src = input;
-        msg.textContent = "";
-      } else {
-        msg.textContent = "Only Wikipedia supported. Use https://";
-      }
-    }
-
-    function calcPress(val) {
-      const disp = document.getElementById("calc-display");
-      if (val === 'C') disp.value = '';
-      else if (val === '=') {
-        try {
-          disp.value = eval(disp.value);
-        } catch {
-          disp.value = 'Error';
-        }
-      } else {
-        disp.value += val;
-      }
-    }
-
-    function saveNote() {
-      alert("Note saved! (but will be lost after refresh)");
-    }
-
-    function askAI() {
-      const chatbox = document.getElementById("chatbox");
-      const input = document.getElementById("aiInput");
-      const question = input.value.toLowerCase();
-      input.value = "";
-      chatbox.innerHTML += `<p><b>You:</b> ${question}</p>`;
-
-      let response = "The AI is unfortunately limited, meaning you can only ask limited questions.";
-
-      if (question.includes("what's your name") || question.includes("your name")) {
-        response = "My name is Peré Enfrokian, meaning I'm Pure Enfrokian.";
-      } else if (question.includes("hi") || question.includes("hello") || question.includes("hey")) {
-        response = "Hello, how can I help you?";
-      } else if (question.includes("joke")) {
-        const jokes = [
-          "Why don't scientists trust atoms? Because they make up everything!",
-          "Why did the scarecrow win an award? Because he was outstanding in his field!",
-          "Why did the math book look sad? Because it had too many problems!",
-          "Why don't eggs tell jokes? Because they'd crack each other up!",
-          "I'm reading a book on anti-gravity. It's impossible to put down!"
-        ];
-        response = jokes[Math.floor(Math.random() * jokes.length)];
-      } else if (question.includes("horror")) {
-        const stories = [
-          "It was midnight. A tap on the window. But no one was there...",
-          "The lights flickered. Her phone lit up. 'I see you', it said.",
-          "He woke up and saw a shadow standing over his bed. It smiled.",
-          "In the mirror, a reflection blinked... but she didn’t.",
-          "Footsteps in the attic. He lived alone."
-        ];
-        response = stories[Math.floor(Math.random() * stories.length)];
-      } else if (question.match(/[0-9\+\-\*\/\.\(\)]+/)) {
-        try {
-          response = eval(question);
-        } catch {
-          response = "I couldn't solve that math problem.";
-        }
-      }
-
-      chatbox.innerHTML += `<p><b>AI:</b> ${response}</p>`;
     }
   </script>
 </body>
