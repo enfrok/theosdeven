@@ -112,8 +112,7 @@
 <body>
   <!-- Setup screen -->
   <div class="screen" id="startup">
-    <h1>Welcome to EnfrokOS</h1>
-    To learn how to use EnfrokOS, after setup click Settings.
+    <h1>EnfrokOS Setup</h1>
     <p>Please enter your name and password to begin setup.</p>
     <input type="text" id="name" placeholder="Enter your name">
     <input type="password" id="password" placeholder="Create a password">
@@ -127,7 +126,7 @@
     <ul style="text-align:left; max-width: 400px">
       <li>• Minimising on EnfrokOS is currently not available.</li>
       <li>• There are currently five apps: Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</li>
-      <li>• Settings app cannot be used to edit EnfrokOS for now.</li>
+      <li>• Settings app is incomplete and would be functioning soon.</li>
       <li>• Shifting apps from one place to another is not available yet.</li>
     </ul>
     <h3 style="margin-top: 20px">Warning</h3>
@@ -138,7 +137,7 @@
   <!-- Login screen -->
   <div class="screen hidden" id="login">
     <h2 id="login-user">Welcome</h2>
-    <p>Please enter the password you created during setup.</p>
+    <p>Please enter your password to continue.</p>
     <input type="password" id="login-input" placeholder="Enter password">
     <div class="error" id="login-error"></div>
     <button onclick="login()">Login</button>
@@ -167,11 +166,7 @@
 
     <div class="window" id="settings">
       <div class="window-header">Settings</div>
-      <div class="window-body">Click the lock icon to Lock the EnfrokOS
-        Click the Robot icon app to use AI
-        Click the note + pencil icon for Notepad.
-        Click the Internet icon for browser (Wikipedia only)
-        Click A Box with Red balls for calculator.</div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
     </div>
 
     <div class="window" id="calc">
@@ -250,7 +245,7 @@
         document.getElementById("login").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
       } else {
-        error.textContent = "The password which was entered is wrong.";
+        error.textContent = "Wrong password.";
       }
     }
 
@@ -275,7 +270,7 @@
         iframe.src = input;
         msg.textContent = "";
       } else {
-        msg.textContent = "Use https:// and URL of Wikipedia is 'www. wikipedia.org'";
+        msg.textContent = "Only Wikipedia supported. Use https://";
       }
     }
 
@@ -294,8 +289,7 @@
     }
 
     function saveNote() {
-      alert("Note saving success!");
-      }
+      alert("Note saved! (but will be lost after refresh)");
     }
 
     function sendToAI() {
@@ -320,7 +314,7 @@
           const result = eval(message);
           chatbox.innerHTML += `<p><b>AI:</b> The answer is ${result}</p>`;
         } catch {
-          chatbox.innerHTML += `<p><b>AI:</b> The Enfrokian Bot is unable to solve algebra questions.</p>`;
+          chatbox.innerHTML += `<p><b>AI:</b> I couldn't calculate that.</p>`;
         }
       } else if (["hi", "hello", "hey"].some(word => message.includes(word))) {
         chatbox.innerHTML += `<p><b>AI:</b> Hello, how can I help you?</p>`;
@@ -331,3 +325,4 @@
   </script>
 </body>
 </html>
+
