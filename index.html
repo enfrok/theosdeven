@@ -1,291 +1,270 @@
+<!-- Arya OS V2 - apps.html with setup, login, and lock screen -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EnfrokOS</title>
-  <style>
-    :root {
-      --bg: #1c1c1c;
-      --primary: #0078d7;
-      --white: #fff;
-      --font: -apple-system, BlinkMacSystemFont, 'San Francisco', sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: var(--font);
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .fade {
-      opacity: 0;
-      animation: fadein 1s forwards;
-    }
-
-    @keyframes fadein {
-      to {
-        opacity: 1;
-      }
-    }
-
-    .screen {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: var(--bg);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      z-index: 10;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    input, button, textarea {
-      padding: 10px;
-      margin: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    button {
-      background: var(--primary);
-      color: var(--white);
-      cursor: pointer;
-    }
-
-    .topbar {
-      background: #111;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-    }
-
-    .apps {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-      padding: 40px;
-    }
-
-    .app {
-      background: #2c2c2c;
-      border-radius: 20px;
-      padding: 20px;
-      width: 100px;
-      height: 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: background 0.2s;
-    }
-
-    .app:hover {
-      background: #3a3a3a;
-      cursor: pointer;
-    }
-
-    .app img {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 10px;
-    }
-
-    .window {
-      position: fixed;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 400px;
-      background: #2e2e2e;
-      padding: 20px;
-      border-radius: 10px;
-      display: none;
-      flex-direction: column;
-      z-index: 100;
-    }
-
-    .window h2 {
-      margin-bottom: 10px;
-    }
-
-    textarea, input[type="text"] {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnfrokUI</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to bottom right, #1e1e1e, #3a3a3a);
+    color: white;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    text-align: center;
+  }
+  .hidden { display: none; }
+  .box {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    animation: fadein 0.6s ease;
+  }
+  input[type="text"], input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+  }
+  button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  button:hover { background-color: #0199a2; }
+  .error { color: red; margin-bottom: 10px; }
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 14px;
+  }
+  .app-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 50px 20px;
+  }
+  .app {
+    width: 90px;
+    height: 90px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.3s ease;
+  }
+  .app:hover { background: rgba(255, 255, 255, 0.25); }
+  .icon { font-size: 24px; margin-bottom: 5px; }
+  #browserWindow, #calcWindow, #settingsWindow {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c2c2c;
+    border: 2px solid #00bcd4;
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    z-index: 10;
+    width: 90%;
+    max-width: 400px;
+    animation: fadein 0.5s ease;
+  }
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   </style>
 </head>
 <body>
-  <div class="screen fade" id="setup">
-    <h2>Welcome to EnfrokOS</h2>
-    <p>This OS includes Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</p>
-    <input type="text" id="setup-name" placeholder="Enter your name">
-    <input type="password" id="setup-password" placeholder="Create a password">
-    <button onclick="showWarning()">Continue</button>
+  <!-- Setup screen -->
+  <div class="screen" id="startup">
+    <h1>EnfrokOS Setup</h1>
+    <p>Please enter your name and password to begin setup.</p>
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="password" id="password" placeholder="Create a password">
+    <div class="error" id="setup-error"></div>
+    <button onclick="showConditions()">Continue</button>
   </div>
 
-  <div class="screen hidden fade" id="warning">
-    <h2>Warning</h2>
-    <p>Do not write any of your important information in the app 'Notepad' because after you refresh all data would be removed from the Operating System.</p>
+  <!-- Conditions screen -->
+  <div class="screen hidden" id="conditions">
+    <h2>Conditions in EnfrokOS</h2>
+    <ul style="text-align:left; max-width: 400px">
+      <li>• Minimising on EnfrokOS is currently not available.</li>
+      <li>• There are currently five apps: Browser, Settings, Calculator, Notepad, and Enfrokian Intelligence.</li>
+      <li>• Settings app is incomplete and would be functioning soon.</li>
+      <li>• Shifting apps from one place to another is not available yet.</li>
+    </ul>
+    <h3 style="margin-top: 20px">Warning</h3>
+    <p style="max-width: 400px; color: #ffb3b3">Do not write any of your important information in the app 'Notepad' because after you refresh all data would be removed from the Operating System.</p>
     <button onclick="goToLogin()">Continue</button>
   </div>
 
-  <div class="screen hidden fade" id="login">
-    <h2 id="login-title">Please enter your password to continue</h2>
-    <input type="password" id="login-password" placeholder="Password">
-    <button onclick="handleLogin()">Login</button>
+  <!-- Login screen -->
+  <div class="screen hidden" id="login">
+    <h2 id="login-user">Welcome</h2>
+    <p>Please enter your password to continue.</p>
+    <input type="password" id="login-input" placeholder="Enter password">
+    <div class="error" id="login-error"></div>
+    <button onclick="login()">Login</button>
   </div>
 
-  <div class="hidden fade" id="desktop">
-    <div class="topbar">
-      <span>THUNDER DEVER</span>
-      <span id="user-display">Enfrok</span>
-      <span style="cursor:pointer;" onclick="lockOS()">🔒</span>
+  <!-- Desktop -->
+  <div class="hidden" id="desktop">
+    <div class="taskbar">
+      <div class="icon" onclick="openApp('browser')">🌐</div>
+      <div class="icon" onclick="openApp('settings')">⚙️</div>
+      <div class="icon" onclick="openApp('calc')">🧮</div>
+      <div class="icon" onclick="openApp('notepad')">📝</div>
+      <div class="icon" onclick="openApp('ai')">🤖</div>
+      <div class="icon" onclick="lockOS()">🔒</div>
     </div>
 
-    <div class="apps">
-      <div class="app" onclick="openApp('settings')">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="Settings" />
-        Settings
-      </div>
-      <div class="app" onclick="openApp('browser')">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/internet.png" alt="Browser" />
-        Browser
-      </div>
-      <div class="app" onclick="openApp('calculator')">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/calculator.png" alt="Calculator" />
-        Calculator
-      </div>
-      <div class="app" onclick="openApp('notepad')">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/note.png" alt="Notepad" />
-        Notepad
-      </div>
-      <div class="app" onclick="openApp('ai')">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/artificial-intelligence.png" alt="AI" />
-        Enfrokian AI
+    <div class="window" id="browser">
+      <div class="window-header">Browser</div>
+      <div class="window-body">
+        <input type="text" id="url" placeholder="Only Wikipedia supported">
+        <button onclick="loadSite()">Go</button>
+        <iframe id="iframe" style="width:100%; height:200px;"></iframe>
+        <div id="browser-msg"></div>
       </div>
     </div>
 
     <div class="window" id="settings">
-      <h2>Settings</h2>
-      <p>Customize your OS soon. (Demo only)</p>
+      <div class="window-header">Settings</div>
+      <div class="window-body">Settings won't work as it is incomplete.</div>
     </div>
-    <div class="window" id="browser">
-      <h2>Browser</h2>
-      <input type="text" id="url" placeholder="Enter Wikipedia URL...">
-      <button onclick="loadSite()">Go</button>
-      <iframe id="iframe" style="width:100%; height:200px;"></iframe>
-      <p id="browser-msg"></p>
-    </div>
-    <div class="window" id="calculator">
-      <h2>Calculator</h2>
-      <input type="text" id="calc-display" readonly>
-      <div>
-        <button onclick="calcPress('7')">7</button>
-        <button onclick="calcPress('8')">8</button>
-        <button onclick="calcPress('9')">9</button>
-        <button onclick="calcPress('+')">+</button><br>
-        <button onclick="calcPress('4')">4</button>
-        <button onclick="calcPress('5')">5</button>
-        <button onclick="calcPress('6')">6</button>
-        <button onclick="calcPress('-')">-</button><br>
-        <button onclick="calcPress('1')">1</button>
-        <button onclick="calcPress('2')">2</button>
-        <button onclick="calcPress('3')">3</button>
-        <button onclick="calcPress('*')">*</button><br>
-        <button onclick="calcPress('0')">0</button>
-        <button onclick="calcPress('.')">.</button>
-        <button onclick="calcPress('=')">=</button>
-        <button onclick="calcPress('C')">C</button>
+
+    <div class="window" id="calc">
+      <div class="window-header">Calculator</div>
+      <div class="window-body">
+        <input type="text" id="calc-display" readonly style="width:100%; font-size:1.2rem;">
+        <div style="margin-top: 10px;">
+          <button onclick="calcPress('7')">7</button>
+          <button onclick="calcPress('8')">8</button>
+          <button onclick="calcPress('9')">9</button>
+          <button onclick="calcPress('+')">+</button><br>
+          <button onclick="calcPress('4')">4</button>
+          <button onclick="calcPress('5')">5</button>
+          <button onclick="calcPress('6')">6</button>
+          <button onclick="calcPress('-')">-</button><br>
+          <button onclick="calcPress('1')">1</button>
+          <button onclick="calcPress('2')">2</button>
+          <button onclick="calcPress('3')">3</button>
+          <button onclick="calcPress('*')">×</button><br>
+          <button onclick="calcPress('0')">0</button>
+          <button onclick="calcPress('.')">.</button>
+          <button onclick="calcPress('=')">=</button>
+          <button onclick="calcPress('C')">C</button>
+        </div>
       </div>
     </div>
+
     <div class="window" id="notepad">
-      <h2>Notepad</h2>
-      <textarea id="note"></textarea>
-      <button onclick="alert('Note saved (but not persistent)')">Save</button>
+      <div class="window-header">Notepad</div>
+      <div class="window-body">
+        <textarea id="note" style="width:100%; height:150px;"></textarea>
+        <button onclick="saveNote()">Save</button>
+      </div>
     </div>
+
     <div class="window" id="ai">
-      <h2>The Enfrokian Intelligence</h2>
-      <p>The AI is unfortunately limited, meaning you can only ask limited questions.</p>
-      <input type="text" id="aiInput" placeholder="Ask me anything...">
-      <button onclick="talkToAI()">Send</button>
-      <div id="aiReply" style="margin-top:10px;"></div>
+      <div class="window-header">The Enfrokian Intelligence</div>
+      <div class="window-body">
+        <p>The AI is unfortunately limited, meaning you can only ask limited questions.</p>
+        <div id="chatbox" style="height: 150px; overflow-y: auto; font-size: 0.9rem; margin-bottom:10px;"></div>
+        <input id="aiInput" placeholder="Ask me anything..." style="width: 100%;">
+        <button onclick="sendToAI()">Send</button>
+      </div>
     </div>
   </div>
 
   <script>
-    let registeredName = "";
-    let registeredPassword = "";
+    let realName = "User";
+    let realPass = "";
 
-    function showWarning() {
-      registeredName = document.getElementById("setup-name").value;
-      registeredPassword = document.getElementById("setup-password").value;
-      document.getElementById("setup").classList.add("hidden");
-      document.getElementById("warning").classList.remove("hidden");
+    function showConditions() {
+      const name = document.getElementById("name").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("setup-error");
+      if (pass.length < 2) {
+        errorBox.textContent = "Password must be at least 2 digits.";
+        return;
+      }
+      realName = name || "User";
+      realPass = pass;
+      document.getElementById("startup").classList.add("hidden");
+      document.getElementById("conditions").classList.remove("hidden");
     }
 
     function goToLogin() {
-      document.getElementById("warning").classList.add("hidden");
+      document.getElementById("conditions").classList.add("hidden");
+      document.getElementById("login-user").textContent = realName;
       document.getElementById("login").classList.remove("hidden");
-      document.getElementById("login-title").textContent = `Welcome ${registeredName}, please enter your password to continue`;
+      document.body.style.background = "#888";
     }
 
-    function handleLogin() {
-      const input = document.getElementById("login-password").value;
-      if (input === registeredPassword) {
+    function login() {
+      const passInput = document.getElementById("login-input").value;
+      const error = document.getElementById("login-error");
+      if (passInput === realPass) {
         document.getElementById("login").classList.add("hidden");
         document.getElementById("desktop").classList.remove("hidden");
-        document.getElementById("user-display").textContent = registeredName;
       } else {
-        alert("Incorrect password.");
+        error.textContent = "Wrong password.";
       }
     }
 
-    function openApp(appName) {
-      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
-      const app = document.getElementById(appName);
-      if (app) app.style.display = 'flex';
+    function lockOS() {
+      document.getElementById("desktop").classList.add("hidden");
+      document.getElementById("login-user").textContent = realName;
+      document.getElementById("login").classList.remove("hidden");
+      document.getElementById("login-input").value = "";
+      document.getElementById("login-error").textContent = "";
     }
 
-    function lockOS() {
-      location.reload();
+    function openApp(id) {
+      document.querySelectorAll('.window').forEach(w => w.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
     }
 
     function loadSite() {
-      const url = document.getElementById("url").value;
+      const input = document.getElementById("url").value;
       const iframe = document.getElementById("iframe");
       const msg = document.getElementById("browser-msg");
-      if (url.includes("wikipedia.org")) {
-        iframe.src = url;
+      if (input.includes("wikipedia.org")) {
+        iframe.src = input;
         msg.textContent = "";
       } else {
-        msg.textContent = "Only Wikipedia is supported.";
+        msg.textContent = "Only Wikipedia supported. Use https://";
       }
     }
 
@@ -303,25 +282,38 @@
       }
     }
 
-    function talkToAI() {
-      const input = document.getElementById("aiInput").value.toLowerCase();
-      const reply = document.getElementById("aiReply");
-      if (input.includes("name")) {
-        reply.textContent = "My name is Peré Enfrokian meaning I'm Pure Enfrokian.";
-      } else if (input.includes("joke")) {
-        reply.textContent = "Why don't scientists trust atoms? Because they make up everything!";
-      } else if (input.includes("hello") || input.includes("hi") || input.includes("hey")) {
-        reply.textContent = "Hello, how can I help you?";
-      } else if (input.includes("horror")) {
-        reply.textContent = "One night, the lights never came back on...";
-      } else if (/\d+[+\-*/]\d+/.test(input)) {
+    function saveNote() {
+      alert("Note saved! (but will be lost after refresh)");
+    }
+
+    function sendToAI() {
+      const input = document.getElementById("aiInput");
+      const chatbox = document.getElementById("chatbox");
+      const message = input.value.trim().toLowerCase();
+      chatbox.innerHTML += `<p><b>You:</b> ${input.value}</p>`;
+      input.value = "";
+
+      if (message.includes("your name")) {
+        chatbox.innerHTML += `<p><b>AI:</b> My name is Peré Enfrokian meaning I'm Pure Enfrokian.</p>`;
+      } else if (message.includes("joke")) {
+        const jokes = ["Why don't scientists trust atoms? Because they make up everything!", "Why did the math book look sad? Because it had too many problems.", "Why was the computer cold? It left its Windows open."];
+        const random = jokes[Math.floor(Math.random() * jokes.length)];
+        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
+      } else if (message.includes("horror")) {
+        const stories = ["One night, a shadow watched me sleep. I never saw it, but I felt it...", "They called from inside the house, but I was home alone.", "My reflection blinked. I didn’t."];
+        const random = stories[Math.floor(Math.random() * stories.length)];
+        chatbox.innerHTML += `<p><b>AI:</b> ${random}</p>`;
+      } else if (message.match(/\d+[\+\-\*\/]\d+/)) {
         try {
-          reply.textContent = `Answer: ${eval(input)}`;
+          const result = eval(message);
+          chatbox.innerHTML += `<p><b>AI:</b> The answer is ${result}</p>`;
         } catch {
-          reply.textContent = "Sorry, I can't solve that.";
+          chatbox.innerHTML += `<p><b>AI:</b> I couldn't calculate that.</p>`;
         }
+      } else if (["hi", "hello", "hey"].some(word => message.includes(word))) {
+        chatbox.innerHTML += `<p><b>AI:</b> Hello, how can I help you?</p>`;
       } else {
-        reply.textContent = "I didn't understand that. Try asking differently.";
+        chatbox.innerHTML += `<p><b>AI:</b> I'm limited in what I can answer right now.</p>`;
       }
     }
   </script>
