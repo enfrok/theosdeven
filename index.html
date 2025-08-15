@@ -266,11 +266,13 @@
       const input = document.getElementById("url").value;
       const iframe = document.getElementById("iframe");
       const msg = document.getElementById("browser-msg");
-      if (input.includes("wikipedia.org")) {
-        iframe.src = input;
-        msg.textContent = "";
-      } else {
-        msg.textContent = "Only Wikipedia supported. Use https://";
+    if (input.includes("wikipedia.org") || input.includes("youtube.com")) {
+    iframe.src = input;
+    msg.textContent = "";
+} else {
+    msg.textContent = "Only Wikipedia and YouTube supported. Use https://";
+}
+
       }
     }
 
